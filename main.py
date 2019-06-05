@@ -10,17 +10,12 @@ TODO:
 
 
 from newsparser import NewsParser
-import glob
-import numpy as np
 import pandas as pd
 import os
 
-
-
-
 data_dir = os.path.join(os.getcwd(), 'data/imdb_master.csv')
 
-def data_get(path):
+def get_data(path):
   data = pd.read_csv(path, encoding='latin-1')
   data = data.drop(['Unnamed: 0', 'type', 'file'], axis=1)
   data = data[data.label != 'unsup']
@@ -32,7 +27,7 @@ path = '/home/bartek/Desktop/Projects/Python/NewsSentimentAnalysis/data/news.db'
 topics = ['Love', 'Hate', 'Kill', 'Happy']
 labels = [True, False, False, True]
 if __name__ == '__main__':
-  data = data_get(data_dir)
+  data = get_data(data_dir)
 
 
 
