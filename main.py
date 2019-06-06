@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 '''
-TODO:
- - add database and fill news
+  TODO:
+   - add database and fill news
  - figure out how to label news
  - build neural network
  - clean code
@@ -10,6 +10,7 @@ TODO:
 
 
 from newsparser import NewsParser
+from cleaner import Cleaner
 import pandas as pd
 import os
 
@@ -28,7 +29,23 @@ topics = ['Love', 'Hate', 'Kill', 'Happy']
 labels = [True, False, False, True]
 if __name__ == '__main__':
   data = get_data(data_dir)
+  cleaner = Cleaner(data)
+  cleaner.create_dataset('review', False)
+  cleaner.normalize()
+  print(cleaner.text[10])
 
+
+
+
+
+
+
+
+
+
+
+  
+  
 
 
 
