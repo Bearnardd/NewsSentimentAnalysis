@@ -12,9 +12,12 @@
 from newsparser import NewsParser
 from cleaner import Cleaner
 import pandas as pd
+import numpy as np
 import os
 
 data_dir = os.path.join(os.getcwd(), 'data/imdb_master.csv')
+dow_path = '/home/bartek/Downloads/'
+glove_dir = os.path.join(dow_path, 'glove.6B.50d.txt')
 
 def get_data(path):
   data = pd.read_csv(path, encoding='latin-1')
@@ -31,20 +34,20 @@ def loadGloveModel(glove_dir):
     for line in f:
       splitline = line.split()
       word = splitline[0]
-      embedding = np.array([float[val] for val in splitline[1:])
+      embedding = np.array([float(val) for val in splitline[1:]])
       model[word] = embedding
   print(f'Done! {len(model)} words loaded')
   return model
+
+
+
 
 path = '/home/bartek/Desktop/Projects/Python/NewsSentimentAnalysis/data/news.db'
 topics = ['Love', 'Hate', 'Kill', 'Happy']
 labels = [True, False, False, True]
 if __name__ == '__main__':
-  data = get_data(data_dir)
-  cleaner = Cleaner(data)
-  cleaner.create_dataset('review', False)
-  cleaner.normalize()
-  print(cleaner.text[10])
+  loadGloveModel(glove_dir)
+
 
 
 
