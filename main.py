@@ -24,6 +24,18 @@ def get_data(path):
   data['label'] = data.label.map({'neg':0, 'pos':1})
   return data
 
+def loadGloveModel(glove_dir):
+  print('Loading Glove Model')
+  model = {}
+  with open(glove_dir, 'r') as f:
+    for line in f:
+      splitline = line.split()
+      word = splitline[0]
+      embedding = np.array([float[val] for val in splitline[1:])
+      model[word] = embedding
+  print(f'Done! {len(model)} words loaded')
+  return model
+
 path = '/home/bartek/Desktop/Projects/Python/NewsSentimentAnalysis/data/news.db'
 topics = ['Love', 'Hate', 'Kill', 'Happy']
 labels = [True, False, False, True]
