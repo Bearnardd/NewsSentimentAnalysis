@@ -14,7 +14,7 @@ from cleaner import Cleaner
 import pandas as pd
 import numpy as np
 import os
-
+    
 data_dir = os.path.join(os.getcwd(), 'data/imdb_master.csv')
 dow_path = '/home/bartek/Downloads/'
 glove_dir = os.path.join(dow_path, 'glove.6B.50d.txt')
@@ -28,7 +28,11 @@ def get_data(path):
   return data
 
 def loadGloveModel(glove_dir):
-  print('Loading Glove Model')
+  '''
+  Loads glove weigths from
+  from downloaded file
+  '''
+  print('Loading Glove Model!')
   model = {}
   with open(glove_dir, 'r') as f:
     for line in f:
@@ -41,6 +45,22 @@ def loadGloveModel(glove_dir):
 
 
 
+def create_emb_matrix(emb_idx, tokenizer, emb_size):
+    word_idx = tokenizer.word_index
+    lenght = min(max_words, len(word_idx))
+    all_embeddings = np.stack(emb_idx.values())
+    mean = all_embeddings.mean()
+    std = all_embeddings.std()
+    embedding_matrix = np.random.normal(mean, std, (lenght, emb_size))
+    for word, val in word_idx.items():
+        if val >= max_words:
+            continue
+        embedding_vector = emb_idx.get(word)
+        if embedding_vector is not None:
+            embedding_matrix[val] = embedding_vector
+    return embedding_matrix
+
+
 
 path = '/home/bartek/Desktop/Projects/Python/NewsSentimentAnalysis/data/news.db'
 topics = ['Love', 'Hate', 'Kill', 'Happy']
@@ -48,7 +68,7 @@ labels = [True, False, False, True]
 if __name__ == '__main__':
   loadGloveModel(glove_dir)
 
-
+  
 
 
 
