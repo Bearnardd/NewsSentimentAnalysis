@@ -3,29 +3,24 @@
 
 import unicodedata  
 import inflect
+from collections import Counter
 import re
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk import word_tokenize
-'''Clean the data'''
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+
 class Cleaner:
   def __init__(self, df):
     self.df = df
   
-  def create_dataset(self, column, tokenize=True):
+  def create_dataset(self, column):
     self.text = list(self.df[column])
     new_words = []
-    if tokenize:
-      for line in self.text:
-        word = word_tokenize(line)
-        new_words.append(word)
-        print(new_words)
-        break
-      self.text = new_words
+		
 
 
-
-   
   def remove_non_ascii(self):
     new_words = []
     for word in self.text:
@@ -33,7 +28,7 @@ class Cleaner:
       new_words.append(new_word)
     self.text = new_words
 
-
+		
   def to_lowercase(self):
     new_words = []
     for word in self.text:
@@ -83,7 +78,6 @@ class Cleaner:
 
   def normalize(self):
     new_words = []
-    i = 0
     self.remove_non_ascii()
     self.to_lowercase()
     self.remove_punctuation()
@@ -94,8 +88,41 @@ class Cleaner:
       new_text = word_tokenize(text)
       new_words.append(new_text)
     self.text = new_words
+  
+
+  def word2idx(self):
+    '''
+    Takes as input tokenized text and
+    return word2idx dict
+    '''
+    text_all = [' '.join(line) for line in self.text]
+    all_reviews = ' '.join(text_all)
+    words = all_reviews.split()
+    total_words = len(words)
+    count_words = Counter(words)
+    sorted_words = count_words.most_common(total_words)
+    self.word2idx = {w:i+1 for i, (w,c) in enumerate(sorted_words)}
 
 
+  def encode_reviews(self):
+    self.reviews_int = []
+    for review in self.text:
+      r = [self.word2idx[word] for word in review]
+      self.reviews_int.append(r)
+
+  
+  def to_pad(self, tokenizer, maxlen):
+    seq = tokenizer.texts_to_sequences(self.text)
+    pad = pad_sequences(seq, maxlen=maxlen)
+    return pad
+   
+    
+
+          
+        
+    
+        
+              
 
     
 
