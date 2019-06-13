@@ -11,20 +11,20 @@ from nltk import word_tokenize
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 
-
 class Cleaner:
-  def __init__(self, text):
+  def __init__(self):
     self.lemmatizer = WordNetLemmatizer()
     self.stop_words = set(stopwords.words('english'))
+    self.p = inflect.engine()
     
   def clean_data(self, text):
-    text = re.sub('[^\w\s]', '', text, re.UNICODE)
+    text = re.sub('[^\n\w\s]', '', text, re.UNICODE)
     text = text.lower()
     text = [self.lemmatizer.lemmatize(token) for token in text.split(' ')]
     text = [self.lemmatizer.lemmatize(token, 'v') for token in text]
     text = [word for word in text if not word in self.stop_words]
-    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8', 'ignore')
     text = ' '.join(text)
+    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8', 'ignore')
     return text
 
      

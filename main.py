@@ -2,10 +2,8 @@
 
 '''
   TODO:
-   - add database and fill news
- - figure out how to label news
- - build neural network
- - clean code
+   - use parser class to get
+     newses and predict 
 '''
 
 
@@ -21,37 +19,46 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
     
-data_dir = os.path.join(os.getcwd(), 'data/imdb_master.csv')
+data_dir = os.path.join(os.getcwd(), 'data/train.csv')
 dow_path = '/home/bartek/Downloads/'
 glove_dir = os.path.join(dow_path, 'glove.6B.50d.txt')
-maxlen = 130
-max_words = 10000
-emb_size = 128 
+maxlen = 100
+max_words = 20000
+emb_size = 50
+batch_size = 128
+epochs = 2
+
 
 def get_data(path):
-  data = pd.read_csv(path, encoding='latin-1')
-  data = data.drop(['Unnamed: 0', 'type', 'file'], axis=1)
-  data = data[data.label != 'unsup']
-  data = data.reset_index(drop=True)
-  data['label'] = data.label.map({'neg':0, 'pos':1})
-  return data
+  df = pd.read_csv(path, encoding='latin-1')
+  df = df[['comment_text', 'toxic']]
+  df['comment_text']= df.comment_text.apply(lambda x: cleaner.clean_data(x))
+  return df
 
-def loadGloveModel(glove_dir):
-  '''
-  Loads glove weigths from
-  from downloaded file
-  '''
-  print('Loading Glove Model!')
-  model = {}
-  with open(glove_dir, 'r') as f:
-    for line in f:
-      splitline = line.split()
-      word = splitline[0]
-      embedding = np.array([float(val) for val in splitline[1:]])
-      model[word] = embedding
-  print(f'Done! {len(model)} words loaded')
-  return model
 
+def get_df():
+  df = pd.read_csv('imdb_master.csv', encoding='latin-1')
+  df = df[df.label=='neg']
+  df = df[['review', 'label']]
+  df['label'] = df.label.map({'neg':1})
+  df = df.rename(columns={'review':'comment_text', 'label':'toxic'})
+  df['comment_text'] = df.comment_text.apply(lambda x: cleaner.clean_data(x))
+  return df
+  
+
+def get_balanced_dataset():
+  df_1 = get_data(data_dir)
+  df_2 = get_df()
+  data = pd.concat([df_1, df_2])
+  pos = data[data.toxic==0].sample(len(data[data.toxic==1]))
+  neg = data[data.toxic==1]
+  df = pd.concat([pos, neg])
+  df = df.reset_index(drop=True)
+  return df
+
+
+def get_coefs(word,*arr): 
+    return word, np.asarray(arr, dtype='float32')
 
 
 def create_emb_matrix(emb_idx, tokenizer, emb_size):
@@ -70,101 +77,24 @@ def create_emb_matrix(emb_idx, tokenizer, emb_size):
     return embedding_matrix
 
 
+def to_pad(df, col, tokenizer, maxlen):
+  list_train = df[col].values
+  tokenizer.fit_on_texts(list(list_train))
+  list_tokenized_train = tokenizer.texts_to_sequences(list_train)
+  pad = pad_sequences(list_tokenized_train, maxlen)
+  return pad
 
 
-
-path = '/home/bartek/Desktop/Projects/Python/NewsSentimentAnalysis/data/news.db'
-topics = ['Love', 'Hate', 'Kill', 'Happy']
-labels = [True, False, False, True]
 if __name__ == '__main__':
   cleaner = Cleaner()
-  df = get_data(data_dir)  
-  df['processed_reviews'] = df.review.apply(lambda x: cleaner.clean_data(x))
-
-  tokenizer = Tokenizer(max_words)
-  tokenizer.fit_on_texts(df['processed_reviews'])
-  list_tokenizer_train = tokenizer.texts_to_sequences(df['processed_reviews'])
-
-  X_t = pad_sequences(list_tokenizer_train, maxlen)
-  y = df['label']
-
-  embedding_index = loadGloveModel(glove_dir)
-  embedding_matrix = create_emb_matrix(embedding_index, tokenizer, 128)
-
-  network = Network(max_words, maxlen, emb_size, embedding_matrix)
-  X_train, X_test, y_train, y_test = train_test_split(X_t, y, test_size=0.2, random_state=123)
-
-
-  network._model.fit(X_train,
-                   y_train,
-                   epochs=3,
-                   validation_data=(X_test, y_test))
-
-
-  
-
-  
-
-
-
-
-  '''
-
-  '''
-
-
-      
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-
-
-
-
-
-
-
-  ''' 
-
-  parser = NewsParser()
-  parser.connect_to_db(path)
-  for topic, label in zip(topics, labels):
-    parser.get_data(topic, label, 5, True)
-  parser.disconnect()
-  print('DONE!')
-  network._model.fit(X_train,
-                     y_train,
-                     epochs=3,
-                     batch_size=16,
-                     validation_data=(X_test, y_test))
-
-
-  tokenizer = Tokenizer(maxlen)
-  tokenizer.fit_on_texts(cleaner.text)
-  X = cleaner.to_pad(tokenizer, maxlen)
-  y = data['label'].values
-  print(embedding_matrix[0])
-  print()
-  '''
-
-
-
+  df = get_balanced_dataset()
+  tokenizer = Tokenizer(max_words) 
+  X_t = to_pad(df['comment_text'].values, tokenizer, maxlen)
+  y = df['toxic'].values
+  embedding_idx = dict(get_coefs(*o.strip().split()) for o in open(glove_dir, 'r'))
+  all_embs = np.stack(embedding_idx.values())
+  emb_mean, emb_std = all_embs.mean(), all_embs.std()
+  embedding_matrix = create_emb_matrix(embedding_idx, tokenizer, emb_size)
+  network = Network(max_words, maxlen, emb_size, embedding_matrix, True, )
+  network._model.fit_data(X_t, y, epochs=2, batch_size=128, validation_split=0.1,
+                        True, 'my_model_1.h5')
