@@ -3,8 +3,9 @@
 
 '''
   TODO:
-   - use parser class to get
-     newses and predict 
+    - update README file
+    - Get more data to impove classification, cause atm it 
+      is not the best :) 
 '''
 
 import tensorflow as tf
