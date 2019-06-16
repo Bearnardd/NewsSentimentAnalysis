@@ -42,9 +42,9 @@ class Network:
 
 
 
-  def fit_data(self, X, y, epochs, bs, validation_split, save=False, path=None):
+  def fit_data(self, X, y, epochs, batch_size, validation_split, save=False, path=None):
     
-    self._model.fit(X, y, epochs=epochs, batch_size=bs,
+    self._model.fit(X, y, epochs=epochs, batch_size=batch_size,
                     validation_split=validation_split)
     if save:
       if path==None:

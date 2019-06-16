@@ -95,5 +95,5 @@ if __name__ == '__main__':
   emb_mean, emb_std = all_embs.mean(), all_embs.std()
   embedding_matrix = create_emb_matrix(embedding_idx, tokenizer, emb_size)
   network = Network(max_words, maxlen, emb_size, embedding_matrix, True, None)
-  network.fit_data(X, y, epochs=2, bs=128, validation_split=0.1, save=True,
+  network.fit_data(X, y, epochs=2, batch_size=128, validation_split=0.1, save=True,
       path='my_model_1.h5')
