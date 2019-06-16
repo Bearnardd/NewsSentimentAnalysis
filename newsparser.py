@@ -2,39 +2,33 @@
 
 import requests
 import sqlite3
+from keras.models import load_model
+from cleaner import Cleaner
+from keras.preprocessing.text import Tokenizer
+
 
 class NewsParser:
   def __init__(self):
-    self._titles = []
-    self._desc = []
-    self._content = []
+    pass
 
-  def connect_to_db(self, path):
-    self._conn = sqlite3.connect(path)
-    self._c = self._conn.cursor()
 
-  def disconnect(self):
-    return self._conn.close()
-
-  def get_data(self, topic, positive, page_size, database=True):
-    self._url = f'https://newsapi.org/v2/everything?q={topic}' \
+  def get_data(self, topic, page_size, database=True):
+    self.titles = []
+    self.desc = []
+    self.content = []
+    url = f'https://newsapi.org/v2/everything?q={topic}' \
                 '&apiKey=0fce127066fb4adda75f524c202905eb' \
                 f'&pageSize={page_size}'
-    self._response = requests.get(self._url)
+    response = requests.get(url)
     for page in range(page_size):
-      title = self._response.json()['articles'][page]['title']
-      desc = self._response.json()['articles'][page]['description']
-      content = self._response.json()['articles'][page]['content']
-      self._titles.append(title)
-      self._desc.append(desc)
-      if positive:
-        label = 1
-      else:
-        label = 0
-      self._content.append(content)
-      if database:
-        self._c.execute('INSERT INTO news VALUES(?, ?, ?, ?)', (title, desc, content, label))
-        self._conn.commit()
+      title = response.json()['articles'][page]['title']
+      desc = response.json()['articles'][page]['description']
+      content = response.json()['articles'][page]['content']
+
+      self.titles.append(title)
+      self.desc.append(desc)
+      self.content.append(content)
+  
 
 
 
