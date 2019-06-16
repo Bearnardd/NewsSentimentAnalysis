@@ -10,7 +10,8 @@ warnings.filterwarnings('ignore')
 
 
 class Network:
-  def __init__(self, max_words, maxlen, embeded_size, embedding_matrix, new=True, path):
+  def __init__(self, max_words, maxlen, embeded_size, embedding_matrix, 
+          new=True, path=None):
     self.max_words = max_words
     self.maxlen = maxlen
     self.embeded_size = embeded_size
@@ -34,16 +35,20 @@ class Network:
     outputs = Dense(1, activation='sigmoid')(x)
 
     model = Model(inputs=inputs, outputs=outputs)
-    model.compile(loss=self.loss,
+    model.compile(loss='binary_crossentropy',
                   optimizer='adam',
                   metrics=['acc'])
     return model
 
 
-  def fit_data(X, y, epochs, bs, validation_split, save=False, path=None):
+
+  def fit_data(self, X, y, epochs, bs, validation_split, save=False, path=None):
+    
     self._model.fit(X, y, epochs=epochs, batch_size=bs,
                     validation_split=validation_split)
     if save:
+      if path==None:
+        path = input('Path for weights:\n')
       self._model.save(path)
 
 
