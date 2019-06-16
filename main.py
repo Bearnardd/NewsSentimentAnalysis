@@ -1,24 +1,30 @@
 #!/usr/bin/env python3
 
+
 '''
   TODO:
    - use parser class to get
      newses and predict 
 '''
 
-
+import tensorflow as tf
 from newsparser import NewsParser
 from network import Network
 from cleaner import Cleaner
 from keras.preprocessing.text import Tokenizer
 from sklearn.model_selection import train_test_split
 from keras.preprocessing.sequence import pad_sequences
+from keras.models import load_model
+import h5py
+import sqlite3
 import pandas as pd
 import numpy as np
 import os
 import warnings
 warnings.filterwarnings('ignore')
-    
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+
 data_dir = os.path.join(os.getcwd(), 'data/train.csv')
 dow_path = '/home/bartek/Downloads/'
 glove_dir = os.path.join(dow_path, 'glove.6B.50d.txt')
@@ -34,7 +40,7 @@ def get_data(path):
   df = df[['comment_text', 'toxic']]
   df['comment_text']= df.comment_text.apply(lambda x: cleaner.clean_data(x))
   return df
-
+  
 
 def get_df():
   df = pd.read_csv('./data/imdb_master.csv', encoding='latin-1')
@@ -53,6 +59,7 @@ def get_balanced_dataset():
   pos = data[data.toxic==0].sample(len(data[data.toxic==1]))
   neg = data[data.toxic==1]
   df = pd.concat([pos, neg])
+  df = df.sample(frac=1)
   df = df.reset_index(drop=True)
   return df
 
@@ -77,23 +84,35 @@ def create_emb_matrix(emb_idx, tokenizer, emb_size):
     return embedding_matrix
 
 
-def to_pad(data, tokenizer, maxlen):
-  tokenizer.fit_on_texts(data)
-  list_tokenized = tokenizer.texts_to_sequences(data)
-  pad = pad_sequences(list_tokenized, maxlen)
-  return pad
 
-
-if __name__ == '__main__':
-  cleaner = Cleaner()
+def learn_and_save_model(network, path):
   df = get_balanced_dataset()
-  tokenizer = Tokenizer(max_words) 
   X = to_pad(df['comment_text'].values, tokenizer, maxlen)
   y = df['toxic'].values
   embedding_idx = dict(get_coefs(*o.strip().split()) for o in open(glove_dir, 'r'))
   all_embs = np.stack(embedding_idx.values())
   emb_mean, emb_std = all_embs.mean(), all_embs.std()
   embedding_matrix = create_emb_matrix(embedding_idx, tokenizer, emb_size)
-  network = Network(max_words, maxlen, emb_size, embedding_matrix, True, None)
   network.fit_data(X, y, epochs=2, batch_size=128, validation_split=0.1, save=True,
-      path='my_model_1.h5')
+      path=path)
+
+
+if __name__ == '__main__':
+  network = Network(max_words, maxlen, emb_size, new=False, path='my_model_2.h5')
+  #learn_and_save_model(network, 'my_model_2.h5')
+  network.connect_to_db('./data/news.db')
+  network.predict_news('Murder', 5, True)
+
+
+
+ 
+  
+
+
+
+  
+ 
+
+  
+  
+
