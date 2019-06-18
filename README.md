@@ -20,4 +20,7 @@ Usage is really easy:
  room for improvment), but If You want to train your own in main.py file there
  is function learn_and_save_model where You can train your own network.
 
+## TODO
+ - describe functions, classes etc.
+
 
