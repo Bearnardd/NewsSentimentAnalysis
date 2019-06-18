@@ -69,13 +69,15 @@ class Network:
         pad = self.cleaner.to_pad(data, self.tokenizer, self.maxlen)
         ans = self._model.predict(pad)
         if ans <= 0.5:
-          label = 'POSITIVE'
+          label = 0
         else:
-          label = 'NEGATIVE'
+          label = 1 
         
         if database:
           self.c.execute('INSERT INTO news VALUES(?, ?, ?, ?)', (self.parser.titles[page],          self.parser.desc[page], self.parser.content[page], label))
           self.conn.commit()  
+
+    return label
 
 
     
