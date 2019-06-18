@@ -9,24 +9,29 @@
 	<header>
 		<div class="container">
 		<div id="brandname">
-			ML App
+		      News Sentiment Analysis	
 		</div>
-		<h2>News Sentiment Analysis<h2>
+		
 		
 	</div>
 	</header>
-	<p style="color:blue;font-size:40;text-align:left;"><b>Result</b></p>
+
 	<div class="results">
 
 
 		
-	{% if prediction == 1%}
-	<h2 style="color:blue;">POSITIVE</h2>
+	<h3 style="color:black; text-align:center;"><u>Topic Title:</u></h3>
+ 	{% if prediction == 1%}	
+	<p style="color:blue;font-size:40;text-align:center;"><b>{{text}}</b></p>
 	{% elif prediction == 0%}
-	<h2 style="color:red;">NEGATIVE</h2>
+	<p style="color:red;font-size:40;text-align:center;"><b>{{text}}</b></p>
 	{% endif %}
-	<p style="color:black;font-size:40;text-align:left;"><b>{{text}}</b></p>
-
+	<h3 style="color:black;text-align:center;"><u>Result:</u></h3>
+	{% if prediction == 1%}
+	<h2 style="color:blue;text-align:center;">POSITIVE</h2>
+	{% elif prediction == 0%}
+	<h2 style="color:red;text-align:center;">NEGATIVE</h2>
+	{% endif %}
 	</div>
 
 </body>
