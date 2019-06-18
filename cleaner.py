@@ -18,9 +18,8 @@ class Cleaner:
     
 
   def clean_data(self, text):
-    text = text.lower()
     text = re.sub('[^\n\w\s]', '', text, re.UNICODE)
-
+    text = text.lower()
     text = [self.lemmatizer.lemmatize(token) for token in text.split(' ')]
     text = [self.lemmatizer.lemmatize(token, 'v') for token in text]
     text = [word for word in text if not word in self.stop_words]
