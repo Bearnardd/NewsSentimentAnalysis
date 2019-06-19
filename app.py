@@ -40,7 +40,7 @@ def predict():
         topic = request.form['topic']
         print(topic)
         with graph.as_default():
-            prediction = network.predict_news(topic=topic, page_size=1, database=True)
+            prediction = network.predict_news(topic=topic, page_size=1, database=False)
             print(network.parser.titles[0])
             print(prediction)
    
@@ -49,4 +49,4 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
