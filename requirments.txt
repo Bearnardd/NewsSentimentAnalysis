@@ -1,0 +1,11 @@
+flask==1.0.3
+keras==2.2.4
+pandas==0.24.2
+tensorflow==1.13.1
+nltk==3.4.1
+requests==2.22.0
+
+
+
+
+
