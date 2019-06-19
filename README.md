@@ -11,6 +11,14 @@ simples configuration I can imagine. By default title, description and
 
 ## Usage
 Usage is really easy:
+1.(Docker)
+ - docker build -t <choose image name> 
+ - docker run -it -p 5000:5000 <image name>
+ @params:
+ - -it -> interactive mode
+ - -p -> port: in dockerfile we exsposed port 5000
+
+2.(Manual)
  - news.db is already created is data folder so You do not have to create it
  by yourown, but it is possible with ./create_db.py file.
  
