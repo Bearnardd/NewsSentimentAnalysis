@@ -1,56 +1,101 @@
-body{
-	font:15px/1.5 Arial, Helvetica,sans-serif;
-	padding: 0px;
-	background-color:#f4f3f3;
+html {
+  background-color: #ffffff;
 }
 
-.container{
-	width:100%;
-	margin: auto;
-	overflow: hidden;
+body {
+
+  font-family: monospace;
+  text-align: center;
+  color: black;
 }
 
-header{
-	background:#03A9F4;#35434a;
-	border-bottom:#448AFF 3px solid;
-	height:120px;
-	width:100%;
-	padding-top:30px;
+h2 {
+  font-size: 1.8em;
 }
 
-.main-header{
-			text-align:center;
-			background-color: blue;
-			height:100px;
-			width:100%;
-			margin:0px;
-		}
-#brandname{
-	float:left;
-	font-size:30px;
-	color: #fff;
-	margin: 10px;
+p {
+  font-size: 0.6em;
 }
 
-header h2{
-	text-align:center;
-	color:#fff;
+.topic {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 40px;
+  font-style: italic;
+}
 
+.button {
+  padding: 1px 6px;
+}
+
+.button {
+  align-items:: flex-start;
+  text-align: center;
+  cursor: default;
+  box-sizing: border-box;
+}
+
+.button {
+  text-rendering: auto;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-transform: none;
+  text-indent: 0;
+  text-shadow: none;
+  display: inline-block;
+  margin: 0em;
+  font: 200 7.5px Arial;
+}
+
+.button {
+    -webkit-writing-mode: horizontal-tb !important;
+}
+
+.button {
+  -webkit-writing-mode: horizontal-tb !important;
+}
+
+.button {
+  -webkit-appearance button;
+}
+
+.button .predict-button {
+  width: 120px;
+  height: 25px;
+  border-radius: 8px;
+  background-color: #7052CB;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.text {
+  height: 20px;
+  width: 140px;
+  border-radius: 5px;
+  margin-bottom: 5px;	
+  color: black;
+  font: 600 9px Arial;
 }
 
 
+.inner {
+  background-color: #ffffff;
+  position: absolute;
+  bottom: 60%;
+  margin-left: 150px;
+}
 
-.btn-info {background-color: #2196F3;
-	height:40px;
-	width:100px;} /* Blue */
-.btn-info:hover {background: #0b7dda;}
+
+.image {
+  height: 205px;
+  width: 255px;
+  background-color: #ffffff;
+  background-image: url("./newspaper.jpeg");
+  position: absolute;
+  bottom: 140px;
+  margin-left: 600px;
+  border-radius: 30px;
+  border-color: snow;
+}
 
 
-.results{
-    border-radius: 15px 50px;
-    background: #345fe4;
-    padding: 20px; 
-    width: 300px;
-    height: 250px;
-    font-size:40;
-  }
