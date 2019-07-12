@@ -16,7 +16,7 @@ maxlen = 100
 max_words = 20000
 emb_size = 50
 
-network = Network(max_words, maxlen, emb_size, None, False, 'data/my_model_3.h5')
+network = Network(max_words, maxlen, emb_size, None, False, 'data1/my_model_3.h5')
 
 
 app = Flask('Classifier')
